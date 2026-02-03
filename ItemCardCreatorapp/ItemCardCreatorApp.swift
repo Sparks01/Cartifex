@@ -1,21 +1,21 @@
-//
-//  ItemCardCreatorappApp.swift
-//  ItemCardCreatorapp
-//
-//  Created by Jose Munoz on 12/9/25.
-//
-
 import SwiftUI
 import SwiftData
 
 @main
-struct ItemCardCreatorappApp: App {
+struct ItemCardCreatorApp: App {
     var sharedModelContainer: ModelContainer = {
+        // REGISTER ALL NEW MODELS HERE
         let schema = Schema([
-            Item.self,
+            Card.self,
+            CardCollection.self,
+            SpellDetails.self,
+            WeaponDetails.self,
+            ArmorDetails.self,
+            MagicItemDetails.self,
+            NPCDetails.self,
+            LocationDetails.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
-
         do {
             return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
@@ -26,6 +26,10 @@ struct ItemCardCreatorappApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .task {
+                    CatalogDataStore.shared.loadFromDisk()
+                     await CatalogDataStore.shared.loadAllDataFromAPI()
+                }
         }
         .modelContainer(sharedModelContainer)
     }
